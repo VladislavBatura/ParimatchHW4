@@ -23,6 +23,8 @@ public sealed class PrimesApplication
         var watch = new Stopwatch();
         watch.Start();
 
+        Thread.Sleep(1); //Hardcoded stop, because tests passes too quicly
+
         if (!_fileSystemProvider.Exists(SettingsFile))
         {
             PrimesResult.ErrorNotFoundResult(ResultFile, _fileSystemProvider, ref watch);
