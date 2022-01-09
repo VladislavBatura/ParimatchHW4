@@ -52,7 +52,7 @@ public static class PrimesResult
         var regexPrimes = new Regex(@"(primes)");
         using var stream = new StreamReader(provider.Read(fileName));
         var i = stream.ReadToEnd();
-        if (string.IsNullOrEmpty(i))
+        if (stream.BaseStream.Length == 0 || string.IsNullOrEmpty(i))
         {
             return new List<int>();
         }
@@ -61,7 +61,7 @@ public static class PrimesResult
         {
             regex.Match(i).Value
         };
-        i = i[(listString[0].LastOrDefault() + 2)..];
+        i = i[listString[0].LastOrDefault()..];
         listString.Add(regex.Match(i).Value);
 
 
