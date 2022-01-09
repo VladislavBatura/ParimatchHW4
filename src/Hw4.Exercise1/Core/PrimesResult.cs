@@ -18,7 +18,7 @@ public static class PrimesResult
         stream.WriteLine(" \"success\": false,");
         stream.WriteLine(" \"error\": \"app.settings is missing\",");
         stream.WriteLine($" \"duration\": \"{time.Minutes}:{time.Seconds}:{time.Milliseconds}\",");
-        stream.WriteLine(" \"primes\": null,");
+        stream.WriteLine(" \"primes\": null");
         stream.WriteLine("}");
         stream.Flush();
         memoryStream.Position = 0;
@@ -38,7 +38,7 @@ public static class PrimesResult
         stream.WriteLine(" \"success\": false,");
         stream.WriteLine(" \"error\": \"app.settings is corrupted\",");
         stream.WriteLine($" \"duration\": \"{time.Minutes}:{time.Seconds}:{time.Milliseconds}\",");
-        stream.WriteLine(" \"primes\": null,");
+        stream.WriteLine(" \"primes\": null");
         stream.WriteLine("}");
         stream.Flush();
         memoryStream.Position = 0;
@@ -46,23 +46,33 @@ public static class PrimesResult
         memoryStream.Close();
     }
 
-    public static int[] Read(string fileName, IFileSystemProvider provider)
+    public static List<int> Read(string fileName, IFileSystemProvider provider)
     {
-        var regex = new Regex(@"(?<=\=).*");
+        var regex = new Regex(@"(-?\d+)");
+        var regexPrimes = new Regex(@"(primes)");
         using var stream = new StreamReader(provider.Read(fileName));
-        var from = stream.ReadLine();
-        var to = stream.ReadLine();
-
-        from = regex.Match(from!).Value;
-        to = regex.Match(to!).Value;
-        var array = new int[2];
-        if (int.TryParse(from, out var result))
+        var i = stream.ReadToEnd();
+        if (string.IsNullOrEmpty(i))
         {
-            array[0] = result;
+            return new List<int>();
         }
-        if (int.TryParse(to, out var resultTo))
+
+        var listString = new List<string>
         {
-            array[1] = resultTo;
+            regex.Match(i).Value
+        };
+        i = i[(listString[0].LastOrDefault() + 2)..];
+        listString.Add(regex.Match(i).Value);
+
+
+        var array = new List<int>();
+        if (int.TryParse(listString[0], out var result))
+        {
+            array.Add(result);
+        }
+        if (int.TryParse(listString[1], out var resultTo))
+        {
+            array.Add(resultTo);
         }
 
         return array;
@@ -71,7 +81,7 @@ public static class PrimesResult
     public static void Write(string fileName,
         IFileSystemProvider provider,
         List<int> result,
-        int[] range,
+        List<int> range,
         ref Stopwatch watch)
     {
         watch.Stop();
@@ -83,15 +93,22 @@ public static class PrimesResult
         stream.WriteLine(" \"error\": null,");
         stream.WriteLine($" \"range\": \"{range[0]}-{range[1]}\",");
         stream.WriteLine($" \"duration\": \"{time.Minutes}:{time.Seconds}:{time.Milliseconds}\",");
-        stream.Write(" \"primes\": [");
-
-        for (var i = 0; i < result.Count - 1; i++)
+        if (result.Count > 0)
         {
-            stream.Write($"{result[i]}, ");
-        }
+            stream.Write(" \"primes\": [");
 
-        stream.Write($"{result[^1]}");
-        stream.Write("]\n");
+            for (var i = 0; i < result.Count - 1; i++)
+            {
+                stream.Write($"{result[i]}, ");
+            }
+
+            stream.Write($"{result[^1]}");
+            stream.Write("]\n");
+        }
+        else
+        {
+            stream.WriteLine(" \"primes\": []");
+        }
         stream.WriteLine("}");
         stream.Flush();
         memoryStream.Position = 0;

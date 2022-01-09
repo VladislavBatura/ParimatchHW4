@@ -30,9 +30,10 @@ public sealed class PrimesApplication
         }
 
         var range = PrimesResult.Read(SettingsFile, _fileSystemProvider);
-        if (range.Length < 1)
+        if (range.Count < 1)
         {
             PrimesResult.ErrorFileCorruptedResult(ResultFile, _fileSystemProvider, ref watch);
+            return ReturnCode.Error;
         }
 
         var result = PrimesResult.PrimeNumbers(range[0], range[1]);

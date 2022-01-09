@@ -11,7 +11,17 @@ public class FileSystemProvider : IFileSystemProvider
 
     public Stream Read(string filename)
     {
-        return File.OpenRead(filename);
+        var stream = File.ReadAllLines(filename);
+        var memoryStream = new MemoryStream();
+        using var streamWriter = new StreamWriter(memoryStream);
+        for (var i = 0; i < stream.Length; i++)
+        {
+            streamWriter.WriteLine(stream[i]);
+        }
+        streamWriter.Flush();
+        memoryStream.Position = 0;
+        return memoryStream;
+        //return File.OpenRead(filename);
     }
 
     public void Write(string filename, Stream stream)
