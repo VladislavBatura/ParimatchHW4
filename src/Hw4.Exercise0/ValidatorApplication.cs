@@ -9,8 +9,16 @@ public sealed class ValidatorApplication
     /// </summary>
     public ReturnCode Run(string[] args)
     {
-        // TODO: create a person object from passed `args`
-        Person? person = null;
+        if (args is null || args.Length < 3)
+        {
+            return ReturnCode.InvalidArgs;
+        }
+
+        var name = args[0];
+        var age = ParseData.IntParse(args[1]);
+        var weight = ParseData.DoubleParse(args[2]);
+
+        var person = new Person(name, age, weight);
 
         // validate
         var validationResult = PersonValidator.Validate(person);

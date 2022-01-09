@@ -1,19 +1,26 @@
-﻿namespace Common;
+﻿using System.Text;
+
+namespace Common;
 
 public class FileSystemProvider : IFileSystemProvider
 {
     public bool Exists(string filename)
     {
-        throw new NotImplementedException("Should be implemented by executor");
+        return File.Exists(filename);
     }
 
     public Stream Read(string filename)
     {
-        throw new NotImplementedException("Should be implemented by executor");
+        return File.OpenRead(filename);
     }
 
     public void Write(string filename, Stream stream)
     {
-        throw new NotImplementedException("Should be implemented by executor");
+        var streamReader = new StreamReader(stream);
+        var file = File.OpenWrite(filename);
+        var bytes = Encoding.Default.GetBytes(streamReader.ReadToEnd());
+        file.Write(bytes, 0, bytes.Length);
+        file.Close();
+        streamReader.Close();
     }
 }
