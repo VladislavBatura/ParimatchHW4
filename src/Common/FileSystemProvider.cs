@@ -21,7 +21,6 @@ public class FileSystemProvider : IFileSystemProvider
         streamWriter.Flush();
         memoryStream.Position = 0;
         return memoryStream;
-        //return File.OpenRead(filename);
     }
 
     public void Write(string filename, Stream stream)

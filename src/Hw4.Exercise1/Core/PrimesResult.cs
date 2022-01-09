@@ -49,33 +49,40 @@ public static class PrimesResult
     public static List<int> Read(string fileName, IFileSystemProvider provider)
     {
         var regex = new Regex(@"(-?\d+)");
-        var regexPrimes = new Regex(@"(primes)");
         using var stream = new StreamReader(provider.Read(fileName));
-        var i = stream.ReadToEnd();
-        if (stream.BaseStream.Length == 0 || string.IsNullOrEmpty(i))
+
+        var dataFromStream = stream.ReadToEnd();
+        var initialStringArray = dataFromStream.Split(new char[] { ' ', '\n', '\r' });
+        initialStringArray = initialStringArray.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
+        if (stream.BaseStream.Length == 0 || !initialStringArray.Any())
         {
             return new List<int>();
         }
 
-        var listString = new List<string>
+        var rangeStringList = new List<string>();
+        foreach (var item in initialStringArray)
         {
-            regex.Match(i).Value
-        };
-        i = i[listString[0].LastOrDefault()..];
-        listString.Add(regex.Match(i).Value);
-
-
-        var array = new List<int>();
-        if (int.TryParse(listString[0], out var result))
-        {
-            array.Add(result);
-        }
-        if (int.TryParse(listString[1], out var resultTo))
-        {
-            array.Add(resultTo);
+            if (regex.IsMatch(item))
+                rangeStringList.Add(regex.Match(item).Value);
         }
 
-        return array;
+        if (rangeStringList.Count < 2)
+        {
+            return new List<int>();
+        }
+
+        var range = new List<int>();
+        if (int.TryParse(rangeStringList[0], out var result))
+        {
+            range.Add(result);
+        }
+        if (int.TryParse(rangeStringList[1], out var resultTo))
+        {
+            range.Add(resultTo);
+        }
+
+        return range;
     }
 
     public static void Write(string fileName,

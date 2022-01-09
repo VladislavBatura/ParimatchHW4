@@ -30,7 +30,7 @@ public sealed class PrimesApplication
         }
 
         var range = PrimesResult.Read(SettingsFile, _fileSystemProvider);
-        if (range.Count < 1)
+        if (!range.Any() || range.Count < 2)
         {
             PrimesResult.ErrorFileCorruptedResult(ResultFile, _fileSystemProvider, ref watch);
             return ReturnCode.Error;
