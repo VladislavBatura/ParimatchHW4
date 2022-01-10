@@ -11,13 +11,12 @@ public static class PrimesResult
         ref Stopwatch watch)
     {
         watch.Stop();
-        var time = watch.Elapsed;
         var memoryStream = new MemoryStream();
         using var stream = new StreamWriter(memoryStream);
         stream.WriteLine("{");
         stream.WriteLine(" \"success\": false,");
         stream.WriteLine(" \"error\": \"app.settings is missing\",");
-        stream.WriteLine($" \"duration\": \"{time.Minutes}:{time.Seconds}:{time.Milliseconds}\",");
+        stream.WriteLine($" \"duration\": \"{watch.Elapsed}\",");
         stream.WriteLine(" \"primes\": null");
         stream.WriteLine("}");
         stream.Flush();

@@ -1,6 +1,4 @@
-﻿using Hw4.Exercise0.Attributes;
-
-namespace Hw4.Exercise0;
+﻿namespace Hw4.Exercise0;
 
 public static class PersonValidator
 {

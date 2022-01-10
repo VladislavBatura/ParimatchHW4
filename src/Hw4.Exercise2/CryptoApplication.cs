@@ -1,10 +1,12 @@
 ﻿using Common;
+using Hw4.Exercise2.Core;
+using Hw4.Exercise2.Models;
+
 namespace Hw4.Exercise2;
 
 public class CryptoApplication
 {
     private readonly IFileSystemProvider _fileSystemProvider;
-
     public CryptoApplication(IFileSystemProvider fileSystemProvider)
     {
         _fileSystemProvider = fileSystemProvider;
@@ -20,6 +22,40 @@ public class CryptoApplication
     /// </returns>
     public ReturnCode Run(string[] args)
     {
-        throw new NotImplementedException("Should be implemented by executor");
+        //if (args is null || args.Length == 0)
+        //{
+        //    return ReturnCode.Error;
+        //}
+
+        var input = InputHandler.ReturnModel(args);
+
+        if (!_fileSystemProvider.Exists(input.InputFile))
+        {
+            return ReturnCode.Error;
+        }
+
+        var data = CryptoCore.Read(input.InputFile, _fileSystemProvider);
+        if (data == null)
+        {
+            return ReturnCode.Error;
+        }
+
+        string? encryptedData;
+        switch (input.Operation)
+        {
+            case 0:
+                encryptedData = CryptoCore.Encipher(data, input.Step);
+                break;
+            case (InputModel.TypeOperation)1:
+                encryptedData = CryptoCore.Decipher(data, input.Step);
+                break;
+            default:
+                encryptedData = data;
+                break;
+        }
+
+        CryptoCore.Write(input.InputFile, encryptedData, _fileSystemProvider, input.Operation.ToString());
+
+        return ReturnCode.Success;
     }
 }

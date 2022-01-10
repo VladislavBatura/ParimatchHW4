@@ -13,12 +13,16 @@ public class FileSystemProvider : IFileSystemProvider
     {
         var stream = File.ReadAllLines(filename);
         var memoryStream = new MemoryStream();
-        using var streamWriter = new StreamWriter(memoryStream);
+        using var memoryStreamRead = new MemoryStream();
+        using var streamWriter = new StreamWriter(memoryStreamRead);
+
         for (var i = 0; i < stream.Length; i++)
         {
             streamWriter.WriteLine(stream[i]);
         }
         streamWriter.Flush();
+        memoryStreamRead.Position = 0;
+        memoryStreamRead.CopyTo(memoryStream);
         memoryStream.Position = 0;
         return memoryStream;
     }
