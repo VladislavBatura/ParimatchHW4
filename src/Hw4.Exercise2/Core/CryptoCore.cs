@@ -4,6 +4,7 @@ namespace Hw4.Exercise2.Core;
 
 public static class CryptoCore
 {
+    private const string Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijhklmnopqrstuvwxyz0123456789";
     public static string? Read(string fileName, IFileSystemProvider provider)
     {
         if (provider.Read(fileName) is null)
@@ -41,17 +42,48 @@ public static class CryptoCore
 
     public static string Decipher(string input, int key)
     {
-        return Encipher(input, 26 - key);
+        return Encipher(input, -key);
     }
 
     public static char Cipher(char ch, int key)
     {
-        if (!char.IsLetter(ch))
+        int lowerLimit, upperLimit, zeroLimit, nineLimit, index;
+
+        if (Chars.Contains(ch))
+        {
+            index = Chars.IndexOf(ch);
+        }
+        else
         {
             return ch;
         }
 
-        var checker = char.IsUpper(ch) ? 'A' : 'a';
-        return (char)(((ch + key - checker) % 26) + checker);
+        zeroLimit = Chars.IndexOf('0');
+        nineLimit = Chars.IndexOf('9');
+
+        if (char.IsNumber(ch) || char.IsLower(ch))
+        {
+            lowerLimit = Chars.IndexOf('a');
+            upperLimit = Chars.IndexOf('z');
+        }
+        else
+        {
+            lowerLimit = Chars.IndexOf('A');
+            upperLimit = Chars.IndexOf('Z');
+        }
+
+        index += key;
+        if (index > upperLimit)
+        {
+            index -= upperLimit;
+            index += zeroLimit - 1;
+        }
+        if (index < lowerLimit)
+        {
+            index = lowerLimit - index;
+            index = nineLimit - index + 1;
+        }
+
+        return Chars[index];
     }
 }

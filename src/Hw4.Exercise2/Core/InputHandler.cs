@@ -16,7 +16,7 @@ public static class InputHandler
         {
             return new InputModel(args[0]);
         }
-        if (args.Length == 2)
+        else if (args.Length == 2)
         {
             var step = IntTryParse(args[1]);
             if (step < 1)
@@ -24,6 +24,15 @@ public static class InputHandler
                 return new InputModel(args[0]);
             }
             return new InputModel(args[0], step);
+        }
+        else if (args.Length == 3)
+        {
+            var step = IntTryParse(args[1]);
+            if (step < 1)
+            {
+                return new InputModel(args[0]);
+            }
+            return new InputModel(args[0], step, args[2]);
         }
         else
         {

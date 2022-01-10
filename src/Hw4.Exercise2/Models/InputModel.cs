@@ -10,7 +10,7 @@ public class InputModel
     public enum TypeOperation
     {
         enc,
-        desc
+        dec
     }
     public TypeOperation Operation { get; }
 
@@ -19,7 +19,7 @@ public class InputModel
         InputFile = inputFile;
         Step = step;
         Operation = operation.Equals("enc", StringComparison.Ordinal)
-            ? TypeOperation.enc : TypeOperation.desc;
+            ? TypeOperation.enc : TypeOperation.dec;
     }
 
     public InputModel(string inputFile, int step)
@@ -34,7 +34,7 @@ public class InputModel
         InputFile = inputFile;
         Step = DefaultStep;
         Operation = operation.Equals("enc", StringComparison.Ordinal)
-            ? TypeOperation.enc : TypeOperation.desc;
+            ? TypeOperation.enc : TypeOperation.dec;
     }
 
     public InputModel(string inputFile)
@@ -49,7 +49,7 @@ public class InputModel
         InputFile = DefaultInput;
         Step = step;
         Operation = operation.Equals("enc", StringComparison.Ordinal)
-            ? TypeOperation.enc : TypeOperation.desc;
+            ? TypeOperation.enc : TypeOperation.dec;
     }
 
     public InputModel()
