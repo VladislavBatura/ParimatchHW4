@@ -22,11 +22,6 @@ public class CryptoApplication
     /// </returns>
     public ReturnCode Run(string[] args)
     {
-        //if (args is null || args.Length == 0)
-        //{
-        //    return ReturnCode.Error;
-        //}
-
         var input = InputHandler.ReturnModel(args);
 
         if (!_fileSystemProvider.Exists(input.InputFile))
