@@ -49,7 +49,8 @@ public class CryptoApplication
                 break;
         }
 
-        CryptoCore.Write(input.InputFile, encryptedData, _fileSystemProvider, input.Operation.ToString());
+        CryptoCore.Write(string.Concat(input.InputFile, '.', input.Operation.ToString()),
+            encryptedData, _fileSystemProvider);
 
         return ReturnCode.Success;
     }

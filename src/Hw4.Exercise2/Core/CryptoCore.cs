@@ -4,28 +4,22 @@ namespace Hw4.Exercise2.Core;
 
 public static class CryptoCore
 {
-    private const string Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijhklmnopqrstuvwxyz0123456789";
+    private const string Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     public static string? Read(string fileName, IFileSystemProvider provider)
     {
-        if (provider.Read(fileName) is null)
-        {
-            return null;
-        }
         using var stream = new StreamReader(provider.Read(fileName));
         var dataFromStream = stream.ReadToEnd();
         return dataFromStream;
     }
 
-    public static void Write(string fileName, string result, IFileSystemProvider provider, string mode)
+    public static void Write(string fileName, string result, IFileSystemProvider provider)
     {
         var memoryStream = new MemoryStream();
-        using var stream = new StreamWriter(memoryStream);
+        var stream = new StreamWriter(memoryStream);
         stream.Write(result);
         stream.Flush();
         memoryStream.Position = 0;
-        fileName = string.Concat(fileName, '.', mode);
         provider.Write(fileName, memoryStream);
-        memoryStream.Close();
     }
 
     public static string Encipher(string input, int key)

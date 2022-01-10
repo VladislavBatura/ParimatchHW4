@@ -12,6 +12,7 @@ public class FileSystemProvider : IFileSystemProvider
     public Stream Read(string filename)
     {
         var stream = File.ReadAllLines(filename);
+
         var memoryStream = new MemoryStream();
         using var memoryStreamRead = new MemoryStream();
         using var streamWriter = new StreamWriter(memoryStreamRead);
