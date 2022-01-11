@@ -32,13 +32,13 @@ public sealed class PrimesApplication
         }
 
         var range = PrimesResult.Read(SettingsFile, _fileSystemProvider);
-        if (!range.Any() || range.Count < 2)
+        if (range.From == -1 && range.To == -1)
         {
             PrimesResult.ErrorFileCorruptedResult(ResultFile, _fileSystemProvider, ref watch);
             return ReturnCode.Error;
         }
 
-        var result = PrimesResult.PrimeNumbers(range[0], range[1]);
+        var result = PrimesResult.PrimeNumbers(range.From, range.To);
 
         PrimesResult.Write(ResultFile, _fileSystemProvider, result, range, ref watch);
 

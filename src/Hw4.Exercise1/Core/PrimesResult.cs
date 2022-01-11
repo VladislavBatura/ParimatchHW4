@@ -45,7 +45,7 @@ public static class PrimesResult
         memoryStream.Close();
     }
 
-    public static List<int> Read(string fileName, IFileSystemProvider provider)
+    public static PrimesSettings Read(string fileName, IFileSystemProvider provider)
     {
         var regex = new Regex(@"(-?\d+)");
         using var stream = new StreamReader(provider.Read(fileName));
@@ -56,7 +56,7 @@ public static class PrimesResult
 
         if (stream.BaseStream.Length == 0 || !initialStringArray.Any())
         {
-            return new List<int>();
+            return new PrimesSettings();
         }
 
         var rangeStringList = new List<string>();
@@ -68,7 +68,7 @@ public static class PrimesResult
 
         if (rangeStringList.Count < 2)
         {
-            return new List<int>();
+            return new PrimesSettings();
         }
 
         var range = new List<int>();
@@ -81,13 +81,13 @@ public static class PrimesResult
             range.Add(resultTo);
         }
 
-        return range;
+        return new PrimesSettings(range[0], range[1]);
     }
 
     public static void Write(string fileName,
         IFileSystemProvider provider,
         List<int> result,
-        List<int> range,
+        PrimesSettings range,
         ref Stopwatch watch)
     {
         watch.Stop();
@@ -97,7 +97,7 @@ public static class PrimesResult
         stream.WriteLine("{");
         stream.WriteLine(" \"success\": true,");
         stream.WriteLine(" \"error\": null,");
-        stream.WriteLine($" \"range\": \"{range[0]}-{range[1]}\",");
+        stream.WriteLine($" \"range\": \"{range.From}-{range.To}\",");
         stream.WriteLine($" \"duration\": \"{time.Minutes}:{time.Seconds}:{time.Milliseconds}\",");
         if (result.Count > 0)
         {

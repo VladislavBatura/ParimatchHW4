@@ -7,63 +7,59 @@ public static class InputHandler
 {
     public static int IntTryParse(string arg)
     {
-        return int.TryParse(arg, out var result) ? result : -1;
+        if (int.TryParse(arg, out var result))
+        {
+            if (result > 0)
+            {
+                return result;
+            }
+        }
+        return -1;
+    }
+    public static string? ModeChecker(string arg)
+    {
+        if (arg.Equals("enc", StringComparison.Ordinal)
+            || arg.Equals("dec", StringComparison.Ordinal))
+        {
+            return arg;
+        }
+        return null;
     }
 
     public static InputModel ReturnModel(string[] args)
     {
-        if (args.Length == 1)
+        int step;
+        switch (args.Length)
         {
-            return new InputModel(args[0]);
+            case 0:
+                return new InputModel();
+            case 1:
+                return new InputModel(args.First());
+            case 2:
+                step = IntTryParse(args[1]);
+                return step != -1 ? new InputModel(args.First(), step) :
+                    new InputModel(args.First());
+            case 3:
+                step = IntTryParse(args[1]);
+                var mode = ModeChecker(args[2]);
+                if (step != -1 && !string.IsNullOrEmpty(mode))
+                {
+                    return new InputModel(args.First(), step, mode);
+                }
+                else if (step != -1)
+                {
+                    if (string.IsNullOrEmpty(mode))
+                    {
+                        return new InputModel(args.First(), step);
+                    }
+                    return new InputModel(args.First(), step, mode);
+                }
+                else
+                {
+                    return new InputModel(args.First());
+                }
+            default:
+                return new InputModel();
         }
-        else if (args.Length == 2)
-        {
-            var step = IntTryParse(args[1]);
-            if (step < 1)
-            {
-                return new InputModel(args[0]);
-            }
-            return new InputModel(args[0], step);
-        }
-        else if (args.Length == 3)
-        {
-            var step = IntTryParse(args[1]);
-            if (step < 1)
-            {
-                return new InputModel(args[0]);
-            }
-            return new InputModel(args[0], step, args[2]);
-        }
-        else
-        {
-            return new InputModel();
-        }
-
-        //var step = IntTryParse(args[1]);
-        //if (step < 1 &&
-        //    (string.IsNullOrEmpty(args[2])
-        //    || !args[2].Equals("enc", StringComparison.Ordinal)
-        //    || !args[2].Equals("desc", StringComparison.Ordinal)))
-        //{
-        //    return new InputModel(args[0]);
-        //}
-        //else if (step < 1)
-        //{
-        //    return new InputModel(args[0], args[2]);
-        //}
-        //else if (string.IsNullOrEmpty(args[2])
-        //    || !args[2].Equals("enc", StringComparison.Ordinal)
-        //    || !args[2].Equals("desc", StringComparison.Ordinal))
-        //{
-        //    return new InputModel(args[0], step);
-        //}
-        //else if (string.IsNullOrEmpty(args[0]))
-        //{
-        //    return new InputModel(step, args[2]);
-        //}
-        //else
-        //{
-        //    return new InputModel();
-        //}
     }
 }
